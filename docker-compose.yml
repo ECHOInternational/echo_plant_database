@@ -1,0 +1,32 @@
+version: '3'
+volumes:
+  pgdata:
+    external: true
+services:
+  db:
+    image: postgres:9.6
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+  pgadmin:
+    image: dpage/pgadmin4
+    depends_on:
+      - db
+    ports:
+      - "3080:80"
+      - "3443:443"
+    volumes:
+      - ./development/pgadmin/servers.json:/pgadmin4/servers.json
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=user@example.com
+      - PGADMIN_DEFAULT_PASSWORD=password
+  web:
+    build: .
+    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
+    volumes:
+      - .:/myapp
+    ports:
+      - "3000:3000"
+    tty: true
+    stdin_open: true
+    depends_on:
+      - db
