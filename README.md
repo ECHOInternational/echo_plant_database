@@ -31,6 +31,7 @@ We are currently in the process of relocating the database and API to this stand
 **Record Ownership**
 - All records shall have ownership
 - All records shall have version tracking
+- All records shall use UUIDs for unique identifiers
 
 ### API
 
