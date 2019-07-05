@@ -79,6 +79,11 @@ GEM
       activemodel (>= 4.2, < 6.1)
       activerecord (>= 4.2, < 6.1)
       request_store (~> 1.0)
+    globalize-versioning (0.3.0)
+      activemodel (>= 4.2.0, < 6)
+      activerecord (>= 4.2.0, < 6)
+      globalize (>= 5.1.0, < 6)
+      paper_trail (>= 8, < 12)
     grape (1.2.4)
       activesupport
       builder
@@ -194,6 +199,7 @@ DEPENDENCIES
   bootsnap (>= 1.4.2)
   byebug
   globalize (~> 5.3)
+  globalize-versioning
   grape (~> 1.2)
   grape-jsonapi-resources
   jsonapi-resources

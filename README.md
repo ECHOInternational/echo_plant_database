@@ -36,8 +36,8 @@ We are currently in the process of relocating the database and API to this stand
 ### API
 
 **Standardized Access**
-Read Only: GraphQL
 Read/Write: JSON:api
+Read Only: GraphQL -- Future
 
 **Versioned**
 - All changes to records shall have trackable histories
