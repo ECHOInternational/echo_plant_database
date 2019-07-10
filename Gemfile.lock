@@ -132,6 +132,8 @@ GEM
     rack (2.0.7)
     rack-accept (0.4.5)
       rack (>= 0.4)
+    rack-contrib (2.1.0)
+      rack (~> 2.0)
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
     rails (6.0.0.rc1)
@@ -207,6 +209,7 @@ DEPENDENCIES
   paper_trail (~> 10.3)
   pg
   puma (~> 3.11)
+  rack-contrib
   rails (~> 6.0.0.rc1)
   spring
   spring-watcher-listen (~> 2.0.0)

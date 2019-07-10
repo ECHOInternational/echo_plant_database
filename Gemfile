@@ -18,6 +18,10 @@ gem 'paper_trail', '~>10.3'
 gem 'globalize', '~> 5.3'
 gem 'globalize-versioning'
 
+# Use Rack-Contrib to add additional middleware
+# Currently using Rack::Locale
+gem 'rack-contrib'
+
 # Use Grape as the REST API DSL
 gem 'grape', '~> 1.2'
 
