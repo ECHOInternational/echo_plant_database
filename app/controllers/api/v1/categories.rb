@@ -26,10 +26,11 @@ module API
 					requires :description, type: String, desc: 'New plant category description'
 				end
 				post do
-					Category.new({
+					category = Category.new({
 						name: params[:name],
 						description: params[:description]
-					}).save
+					})
+					render category if category.save!
 				end
 			end
 		end
