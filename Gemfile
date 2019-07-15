@@ -22,11 +22,7 @@ gem 'globalize-versioning'
 # Currently using Rack::Locale
 gem 'rack-contrib'
 
-# Use Grape as the REST API DSL
-gem 'grape', '~> 1.2'
-
 # Use JSON-API as the data format
-gem 'grape-jsonapi-resources'
 gem 'jsonapi-resources'
 
 # Reduces boot times through caching; required in config/boot.rb
