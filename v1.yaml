@@ -1,0 +1,325 @@
+openapi: 3.0.0
+info:
+  version: '1.0'
+  title: 'ECHO Open Plant API'
+  description: 'API for the ECHO Open Plant Database'
+  contact:
+    name: ECHO ICT
+    email: ict@echonet.org
+    url: www.echocommunity.org
+servers:
+  - description: ECHOcommunity Development Server
+    url: http://development.echocommunity.org:3000/v1/
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/ECHO-Inc/ECHO_Open_Plant_API/1.0
+paths:
+  /categories:
+    get:
+      summary: Get a list of plant categories
+      parameters:
+        - $ref: '#/components/parameters/acceptLanguageParam'
+        - $ref: '#/components/parameters/pageSizeParam'
+        - $ref: '#/components/parameters/pageNumberParam'
+        - $ref: '#/components/parameters/includeParam'
+        - name: "fields[categories]"
+          in: "query"
+          style: "form"
+          explode: false
+          schema:
+            type: "array"
+            items:
+              type: "string"
+              enum: [name, description]
+              example: "name"
+          description: "Sparse Fieldsets: limits returned attributes to those specified."
+      responses:
+        400:
+           $ref: '#/components/responses/400BadRequest'
+        200:
+          description: "Success"
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: "#/components/schemas/Categories"
+    post:
+      summary: Create a plant category
+      parameters:
+       - $ref: '#/components/parameters/acceptLanguageParam'
+       - $ref: '#/components/parameters/contentTypeParam'
+      requestBody:
+        description: The type must match the object, in this case it should be "categories". The ID is not required but is _allowed_ in order to syncronize records. Providing an ID that is already in use will fail with a 409 error, if no ID is provided, one will be automatically assigned.
+        required: true
+        content:
+          application/vnd.api+json:
+            schema:
+              type: "object"
+              required:
+                - "data"
+              properties:
+                data:
+                  type: "object"
+                  required:
+                    - "type"
+                    - "attributes"
+                  properties:
+                    type:
+                      type: "string"
+                      enum: ["categories"]
+                    id:
+                      type: "string"
+                    attributes:
+                      type: "object"
+                      required:
+                        - "name"
+                      properties:
+                        name:
+                          type: "string"
+                          example: "A New Category Name"
+                        description:
+                          type: "string"
+                          example: "A Short description of the category in plain text or html format."
+      responses:
+        201:
+          description: "Created"
+          headers:
+            Location:
+              description: "identifies the location of the newly created resource."
+              schema:
+                type: "string"
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: "#/components/schemas/Category"
+        400:
+          $ref: '#/components/responses/400BadRequest'
+        404:
+          $ref: '#/components/responses/404NotFound'
+        409:
+          $ref: '#/components/responses/409Conflict'
+  /categories/{category}:
+    parameters:
+      - name: category
+        in: "path"
+        required: true
+        description: The UUID of the category to manipulate
+        schema:
+          type: "string"
+      - $ref: '#/components/parameters/acceptLanguageParam'
+    get:
+      summary: Get a plant category
+      parameters:
+        - $ref: '#/components/parameters/includeParam'
+        - name: "fields[categories]"
+          in: "query"
+          style: "form"
+          explode: false
+          schema:
+            type: "array"
+            items:
+              type: "string"
+              enum: [name, description]
+              example: "name"
+          description: "Sparse Fieldsets: limits returned attributes to those specified."
+      responses:
+        400:
+          $ref: '#/components/responses/400BadRequest'
+        404:
+          $ref: '#/components/responses/404NotFound'
+        200:
+          description: "Success"
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: "#/components/schemas/Category"
+components:
+  schemas:
+    JsonApiRecord:
+      type: "object"
+      required:
+        - "type"
+        - "id"
+        - "attributes"
+      properties:
+        type:
+          type: "string"
+        id:
+          type: "string"
+        attributes:
+          type: "object"
+        links:
+          type: "object"
+          properties:
+            self:
+              type: "string"
+        meta:
+          type: "object"
+          
+    CategoryBase:
+      allOf:
+      - $ref: "#/components/schemas/JsonApiRecord"
+      - type: "object"
+      properties:
+        type:
+          pattern: "^categories$"
+        attributes:
+          required:
+          - "name"
+          properties:
+            name:
+              type: "string"
+              example: "Agroforestry Trees"
+            description:
+              type: "string"
+              example: "Agroforestry is the practice of combining the management of annual crops and/or animals with trees. Agroforestry systems, largely composed of perennial crops, offer the resilience needed to address extreme climatic issues such as drought and torrential rain..."
+        links:
+          properties:
+            self:
+              type: "string"
+        meta:
+          required:
+            - "created_at"
+            - "updated_at"
+          properties:
+            requested_language:
+              type: "string"
+              example: "fr"
+            available_languages:
+              type: "array"
+              example: ["en", "fr", "th"]
+              items:
+                type: "string"
+            created_at:
+              type: "string"
+            updated_at:
+              type: "string"
+    Category:
+      type: "object"
+      required:
+        - "data"
+      properties:
+        data:
+          $ref: "#/components/schemas/CategoryBase"
+    Categories:
+      type: "object"
+      required:
+        - "data"
+      properties:
+        data:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/CategoryBase"
+        meta:
+          $ref: "#/components/schemas/Collection_Metadata"
+        links:
+          $ref: "#/components/schemas/Collection_Links"
+    Error:
+      type: "object"
+      required:
+        - "status"
+        - "message"
+      properties:
+        status:
+          type: "string"
+        message:
+          type: "string"
+    Errors:
+      type: "object"
+      required:
+        - "errors"
+      properties:
+        errors:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Error"
+    Collection_Metadata:
+      type: "object"
+      required:
+        - "record-count"
+        - "page-count"
+      properties:
+        record-count:
+          type: "integer"
+        page-count:
+          type: "integer"
+    Collection_Links:
+      type: "object"
+      required:
+        - "first"
+        - "last"
+      properties:
+        first:
+          type: "string"
+        prev:
+          type: "string"
+        next:
+          type: "string"
+        last:
+          type: "string"
+  parameters:
+    includeParam:
+      name: "include"
+      in: "query"
+      description: "Include relationships: formatted as a comma-separated list of relationship paths. A relationship path is a dot-separated list of relationship names."
+      style: "form"
+      explode: false
+      schema:
+        type: "array"
+        items:
+          type: "string"
+      examples:
+        single:
+          value: ["parent"]
+        multiple:
+          value: ["parent", "child"]
+        path:
+          value: ["parent.comments"]
+    pageSizeParam:
+      name: "page[size]"
+      in: "query"
+      description: "How many results per page to return"
+      schema:
+        type: "integer"
+        example: 10
+        default: 20
+    pageNumberParam:
+      name: "page[number]"
+      in: "query"
+      description: "Page of results to return. This is dependent on the page[size] parameter."
+      schema:
+        type: "integer"
+        example: 2
+        default: 1
+    acceptLanguageParam:
+      name: "Accept-Language"
+      in: "header"
+      description: "Specifies locale for requested data."
+      schema:
+        type: "string"
+        example: "en"
+        default: "en"
+    contentTypeParam:
+      name: "Content-Type"
+      in: "header"
+      required: true
+      schema:
+        type: "string"
+        enum: ["application/vnd.api+json"]
+  responses:
+    400BadRequest:
+      description: "Bad Request"
+      content:
+        application/vnd.api+json:
+          schema:
+            $ref: "#/components/schemas/Errors"
+    404NotFound:
+      description: "Not Found"
+      content:
+        application/vnd.api+json:
+          schema:
+            $ref: "#/components/schemas/Errors"
+    409Conflict:
+      description: "Conflict"
+      content:
+        application/vnd.api+json:
+          schema:
+            $ref: "#/components/schemas/Errors"

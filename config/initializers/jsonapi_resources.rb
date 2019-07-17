@@ -17,4 +17,5 @@ JSONAPI.configure do |config|
 	# Rails cache store.
 	config.resource_cache = nil
 
+	config.exception_class_whitelist = [ActiveRecord::RecordNotUnique]
 end

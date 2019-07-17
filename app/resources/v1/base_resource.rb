@@ -3,7 +3,9 @@ class V1::BaseResource < JSONAPI::Resource
 	def meta(options)
 		{
 			requested_language: I18n.locale,
-			available_languages: _model.try(:translations).try(:pluck, 'locale')
+			available_languages: _model.try(:translations).try(:pluck, 'locale'),
+			created_at: _model.created_at,
+			updated_at: _model.updated_at
 		}
 	end
 
