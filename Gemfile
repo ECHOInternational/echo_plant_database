@@ -3,7 +3,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby '2.6.3'
 
-gem 'rails', '~> 6.0.0.rc1'
+gem 'rails', '~> 6.0.0'
 
 # Use postgresql as the database for Active Record
 gem 'pg'
@@ -22,8 +22,12 @@ gem 'globalize-versioning'
 # Currently using Rack::Locale
 gem 'rack-contrib'
 
+# Use JWT for authentication
+gem 'jwt'
+
 # Use JSON-API as the data format
 gem 'jsonapi-resources'
+gem 'jsonapi-swagger'
 
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.4.2', require: false

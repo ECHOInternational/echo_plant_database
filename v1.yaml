@@ -16,6 +16,7 @@ paths:
   /categories:
     get:
       summary: Get a list of plant categories
+      tags: ["Plant Categories"]
       parameters:
         - $ref: '#/components/parameters/acceptLanguageParam'
         - $ref: '#/components/parameters/pageSizeParam'
@@ -43,6 +44,7 @@ paths:
                 $ref: "#/components/schemas/Categories"
     post:
       summary: Create a plant category
+      tags: ["Plant Categories"]
       parameters:
        - $ref: '#/components/parameters/acceptLanguageParam'
        - $ref: '#/components/parameters/contentTypeParam'
@@ -107,6 +109,7 @@ paths:
       - $ref: '#/components/parameters/acceptLanguageParam'
     get:
       summary: Get a plant category
+      tags: ["Plant Categories"]
       parameters:
         - $ref: '#/components/parameters/includeParam'
         - name: "fields[categories]"
@@ -131,6 +134,62 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: "#/components/schemas/Category"
+    patch:
+      summary: Update a plant category
+      tags: ["Plant Categories"]
+      parameters:
+       - $ref: '#/components/parameters/acceptLanguageParam'
+       - $ref: '#/components/parameters/contentTypeParam'
+      requestBody:
+        description: The ID is required and the type must match the object, in this case it should be "categories".
+        required: true
+        content:
+          application/vnd.api+json:
+            schema:
+              type: "object"
+              required:
+                - "data"
+              properties:
+                data:
+                  type: "object"
+                  required:
+                    - "type"
+                  properties:
+                    type:
+                      type: "string"
+                      enum: ["categories"]
+                    id:
+                      type: "string"
+                    attributes:
+                      type: "object"
+                      properties:
+                        name:
+                          type: "string"
+                          example: "Category Name"
+                        description:
+                          type: "string"
+                          example: "A Short description of the category in plain text or html format."
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: "#/components/schemas/Category"
+        400:
+          $ref: '#/components/responses/400BadRequest'
+        404:
+          $ref: '#/components/responses/404NotFound'
+        409:
+          $ref: '#/components/responses/409Conflict'
+    delete:
+      summary: Delete a plant category
+      tags: ["Plant Categories"]
+      responses:
+        204:
+          $ref: '#/components/responses/204NoContent'
+        404:
+          $ref: '#/components/responses/404NotFound'
 components:
   schemas:
     JsonApiRecord:
@@ -305,6 +364,8 @@ components:
         type: "string"
         enum: ["application/vnd.api+json"]
   responses:
+    204NoContent:
+      description: "No Content"
     400BadRequest:
       description: "Bad Request"
       content:

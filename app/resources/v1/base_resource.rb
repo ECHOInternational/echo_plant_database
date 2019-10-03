@@ -9,7 +9,7 @@ class V1::BaseResource < JSONAPI::Resource
 		}
 	end
 
-	def self.creatable_fields(context)
-	    super << :id
-	end
+	#def self.creatable_fields(context)
+	#    super << :id
+	#end
 end
