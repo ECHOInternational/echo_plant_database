@@ -29,6 +29,9 @@ gem 'jwt'
 gem 'jsonapi-resources'
 gem 'jsonapi-swagger'
 
+# Use Graphql
+gem 'graphql', '~>1.9'
+
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.4.2', require: false
 
