@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_18_023833) do
+ActiveRecord::Schema.define(version: 2019_10_03_172958) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -32,6 +32,52 @@ ActiveRecord::Schema.define(version: 2019_07_18_023833) do
     t.index ["locale"], name: "index_category_translations_on_locale"
   end
 
+  create_table "image_attribute_translations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "image_attribute_id", null: false
+    t.string "locale", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.string "name", null: false
+    t.index ["image_attribute_id"], name: "index_image_attribute_translations_on_image_attribute_id"
+    t.index ["locale"], name: "index_image_attribute_translations_on_locale"
+  end
+
+  create_table "image_attributes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "image_attributes_images", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "image_attribute_id", null: false
+    t.uuid "image_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["image_attribute_id"], name: "index_image_attributes_images_on_image_attribute_id"
+    t.index ["image_id"], name: "index_image_attributes_images_on_image_id"
+  end
+
+  create_table "image_translations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "image_id", null: false
+    t.string "locale", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.string "name", null: false
+    t.text "description"
+    t.index ["image_id"], name: "index_image_translations_on_image_id"
+    t.index ["locale"], name: "index_image_translations_on_locale"
+  end
+
+  create_table "images", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "attribution"
+    t.string "s3_bucket"
+    t.string "s3_key"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.string "imageable_type", null: false
+    t.uuid "imageable_id", null: false
+    t.index ["imageable_type", "imageable_id"], name: "index_images_on_imageable_type_and_imageable_id"
+  end
+
   create_table "versions", force: :cascade do |t|
     t.string "item_type", null: false
     t.uuid "item_id", null: false
@@ -44,4 +90,6 @@ ActiveRecord::Schema.define(version: 2019_07_18_023833) do
     t.index ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id"
   end
 
+  add_foreign_key "image_attributes_images", "image_attributes"
+  add_foreign_key "image_attributes_images", "images"
 end

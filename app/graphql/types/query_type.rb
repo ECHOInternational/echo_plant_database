@@ -8,8 +8,16 @@ module Types
       null: false,
       description: "Returns a list of Plant Categories"
 
+    field :category, Types::CategoryType, null: true do
+      description "Find a category by ID"
+      argument :id, ID, required: true
+    end
+
     def categories
       Category.all
+    end
+    def category(id:)
+      Category.find(id)
     end
   end
 end
