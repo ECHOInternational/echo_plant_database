@@ -1,20 +1,22 @@
 class ApplicationController < ActionController::API
+  include ActionController::HttpAuthentication::Token::ControllerMethods
+  before_action :require_token
   before_action :set_paper_trail_whodunnit
 
   def current_user
-  	"Default User - replace this."
+  	@current_user
   end
-  # WARNING! It is expected that token validation is being done by the API gateway
-  # this assumes that everything included in the JWT comes from the authorization
-  # server and has not been tampered with.
-  # def authenticate_user
-  # 	if request.headers['Authorization'].present?
-  # 		authenticate_or_request_with_http_token do |token|
-  # 			begin
-  # 				jwt_payload = JWT.decode(token, nil, false)
-  # 			rescue
-  # 			end
-  # 		end
-  # 	end
-  # end
+
+  private
+
+  def require_token
+    authenticate_or_request_with_http_token do |token|
+      begin
+        jwt_payload = JWT.decode(token, ENV['APPLICATION_JWT_SECRET'], true, { algorithm: ENV['APPLICATION_JWT_ALGORITHM']})
+        @current_user = User.new(jwt_payload[0]["user"])
+      rescue
+        @current_user = nil
+      end
+    end
+  end
 end
