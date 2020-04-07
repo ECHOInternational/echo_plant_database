@@ -30,5 +30,6 @@ services:
     stdin_open: true
     env_file:
       - api.env
+      - aws.env
     depends_on:
       - db

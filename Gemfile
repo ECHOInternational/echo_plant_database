@@ -26,14 +26,21 @@ gem 'rack-contrib'
 gem 'jwt'
 
 # Use JSON-API as the data format
-gem 'jsonapi-resources'
+gem 'jsonapi-resources', '~> 0.9.0'
 gem 'jsonapi-swagger'
+
+# User Pundit
+gem 'pundit'
+gem 'jsonapi-authorization'
 
 # Use Graphql
 gem 'graphql', '~>1.9'
 
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.4.2', require: false
+
+# Allow access to AWS for uploads
+gem 'aws-sdk-s3', '~> 1'
 
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
 # gem 'rack-cors'

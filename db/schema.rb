@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_03_172958) do
+ActiveRecord::Schema.define(version: 2019_10_09_215532) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -19,6 +19,7 @@ ActiveRecord::Schema.define(version: 2019_10_03_172958) do
   create_table "categories", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "created_by"
   end
 
   create_table "category_translations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -73,8 +74,9 @@ ActiveRecord::Schema.define(version: 2019_10_03_172958) do
     t.string "s3_key"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.string "imageable_type", null: false
-    t.uuid "imageable_id", null: false
+    t.string "imageable_type"
+    t.uuid "imageable_id"
+    t.string "created_by"
     t.index ["imageable_type", "imageable_id"], name: "index_images_on_imageable_type_and_imageable_id"
   end
 

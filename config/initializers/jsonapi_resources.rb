@@ -7,6 +7,7 @@ JSONAPI.configure do |config|
  	# Use UUIDS everywhere (this can be overridden at the controller level)
  	config.resource_key_type = :uuid
 
+	config.json_key_format = :underscored_key
  	# Metadata
  	config.top_level_meta_include_record_count = true
  	config.top_level_meta_include_page_count = true
@@ -17,5 +18,13 @@ JSONAPI.configure do |config|
 	# Rails cache store.
 	config.resource_cache = nil
 
-	config.exception_class_whitelist = [ActiveRecord::RecordNotUnique]
+	config.default_processor_klass = JSONAPI::Authorization::AuthorizingProcessor
+
+	config.exception_class_whitelist = [ActiveRecord::RecordNotUnique, Pundit::NotAuthorizedError]
+
+
+end
+
+JSONAPI::Authorization.configure do |config|
+	config.pundit_user = :current_user
 end
