@@ -1,5 +1,5 @@
 module Types
-  class ImageAttributeType < Types::BaseObject
+  class ImageAttributeType < GraphQL::Schema::Object
   	field :name, String, null: false
   end
 end

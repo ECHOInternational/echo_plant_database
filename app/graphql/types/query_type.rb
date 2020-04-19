@@ -1,9 +1,14 @@
 module Types
   class QueryType < Types::BaseObject
+    # Used by Relay to lookup objects by UUID:
+    add_field(GraphQL::Types::Relay::NodeField)
+    # Fetches a list of objects given a list of IDs
+    add_field(GraphQL::Types::Relay::NodesField)
+
     # Add root-level fields here.
     # They will be entry points for queries on your schema.
 
-    field :categories, [Types::CategoryType], null: false do
+    field :categories, Types::CategoryType.connection_type, null: false do
       description "Returns a list of Plant Categories"
       argument :scope, String, required: false, prepare: ->(scope, ctx) {
           raise GraphQL::ExecutionError.new("Invalid Scope Argument") unless ["user", "public", nil].include?(scope)
@@ -28,7 +33,8 @@ module Types
     end
 
     def category(id:)
-      Pundit.policy_scope(context[:current_user], Category).find(id)
+      type_name, item_id = GraphQL::Schema::UniqueWithinType.decode(id)
+      Pundit.policy_scope(context[:current_user], Category).find(item_id)
     end
   end
 end
