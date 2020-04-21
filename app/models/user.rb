@@ -8,8 +8,6 @@ class User
 		@id = options["uid"]
 		@email = options["email"]
 		@permissions = options["trust_levels"]
-		# For testing
-		# @permissions["plant"] = 2
 	end
 
 	# plant permissions

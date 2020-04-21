@@ -3,4 +3,7 @@ class Category < ApplicationRecord
 	translates :name, :description, versioning: {gem: :paper_trail, options: {touch: true, on: [:update] }}
 	validates :name, presence: true
 	include Imageable
+
+	default_scope {includes(:translations)}
+
 end
