@@ -10,19 +10,17 @@ module Types
 
     field :categories, Types::CategoryType.connection_type, null: false do
       description "Returns a list of Plant Categories"
+      argument :id, [String], required: false
       argument :scope, String, required: false, prepare: ->(scope, ctx) {
           raise GraphQL::ExecutionError.new("Invalid Scope Argument") unless ["user", "public", nil].include?(scope)
           scope
       } 
     end
 
-    field :category, Types::CategoryType, null: true do
-      description "Find a category by ID"
-      argument :id, ID, required: true
-    end
 
-    def categories(scope: nil)
-      case scope
+    def categories(id: nil, scope: nil)
+       
+      queryScope = case scope
         when "user"
           Pundit.policy_scope(context[:current_user], Category).where(created_by: context[:current_user].id)
         when "public"
@@ -30,11 +28,23 @@ module Types
         else
           Pundit.policy_scope(context[:current_user], Category)
         end 
+
+        if id 
+          items = id.map do |item|
+            type_name, item_id = GraphQL::Schema::UniqueWithinType.decode(item)
+            item_id if item_id
+          end
+
+          return queryScope.find(items)
+        end
+
+        return queryScope
+
     end
 
-    def category(id:)
-      type_name, item_id = GraphQL::Schema::UniqueWithinType.decode(id)
-      Pundit.policy_scope(context[:current_user], Category).find(item_id)
-    end
+    # def category(id:)
+    #   type_name, item_id = GraphQL::Schema::UniqueWithinType.decode(id)
+    #   Pundit.policy_scope(context[:current_user], Category).find(item_id)
+    # end
   end
 end
