@@ -4,6 +4,6 @@ class Category < ApplicationRecord
 	validates :name, presence: true
 	include Imageable
 
-	default_scope {includes(:translations)}
+	# default_scope {includes(:translations)}
 
 end

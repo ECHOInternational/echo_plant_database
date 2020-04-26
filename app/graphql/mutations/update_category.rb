@@ -15,10 +15,8 @@ module Mutations
 		def resolve(category:, **attributes)
 			language = attributes[:language] || I18n.locale
 
-			attributes.except!(:language)
-
 			Globalize.with_locale(language) do
-				category.update!(attributes)
+				category.update(attributes.except(:language))
 			end
 			category
 		end
