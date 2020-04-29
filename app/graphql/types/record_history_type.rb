@@ -1,1 +1,0 @@
-record_history_type.rb

@@ -9,14 +9,11 @@ module Types
   	field :description, String, "A translated description of a category", null: true
   	field :created_by, String, "The user ID of a category's owner", null: true
   	field :images, Types::ImageType.connection_type, "A list of images related to a category", null: true
-    field :translations, [Types::CategoryTranslationType], "Translations of translatable category fields", null: false, method: :translations
-    field :versions, Types::CategoryVersionType.connection_type, "Historical versions of a category", null: true
+    field :translations, [Types::CategoryType::CategoryTranslationType], "Translations of translatable category fields", null: false, method: :translations
+    field :versions, Types::CategoryType::CategoryVersionConnectionWithTotalCountType, null: false, connection: true
 
     def versions
-      @object.versions.where(event: "update")
+      @object.translation.versions.where(event: "update").reorder('created_at DESC')
     end
-
   end
 end
-
-

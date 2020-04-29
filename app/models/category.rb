@@ -1,9 +1,6 @@
 class Category < ApplicationRecord
 	has_paper_trail
-	translates :name, :description, versioning: {gem: :paper_trail, options: {touch: true, on: [:update] }}
+	translates :name, :description, versioning: :paper_trail
 	validates :name, presence: true
 	include Imageable
-
-	# default_scope {includes(:translations)}
-
 end
