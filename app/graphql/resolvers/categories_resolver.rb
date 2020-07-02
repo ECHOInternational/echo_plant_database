@@ -22,12 +22,12 @@ module Resolvers
 	  	value 'ALL', value: :all, description: "Request both public records, and records that belong to the current user"
 	  end
 
-	  scope {Pundit.policy_scope(context[:current_user], Category).includes(:translations)}
+	  scope {Pundit.policy_scope(context[:current_user], Category)}
 
-	  
-	  option :name, type: types.String, with: :apply_name_filter
+	  option :language, type: types.String, with: :apply_language_filter, description: "Request returned fields in a specific languge. Overrides ACCEPT-LANGUAGE header."
+	  option :name, type: types.String, with: :apply_name_filter, description: "Performs a case-insensitive LIKE match on the name field"
 	  option :owned_by, type: OwnershipEnum, default: :all
-	  option :sort_direction, type: SortDirectionEnum, default: :asc
+	  option :sort_direction, type: SortDirectionEnum, default: :asc, description: "Sorts by name either ascending or descending"
 
 	  def apply_owned_by_with_user(scope)
 	  	scope.where(created_by: context[:current_user].id)
@@ -54,8 +54,16 @@ module Resolvers
 	 	scope.joins(:translations).where('category_translations.name iLIKE ?', "%#{value}%")
 	 end
 
-	  # Because we're "including"  the translations we can get duplicates, eliminate them before returning.
+	 def apply_language_filter(scope, value)
+	 	# the language is actually applied in the fetch results method
+	 	scope
+	 end
+
+	  
 	  def fetch_results
+	  	# Set the requested language
+	  	I18n.locale = language if language
+	  	# Because we're "including"  the translations we can get duplicates, eliminate them before returning.
 	    super.uniq
 	  end
 

@@ -13,10 +13,12 @@ module Types
     field :category, Types::CategoryType, null: true do
       description "Find a category by ID"
       argument :id, ID, required: true
+      argument :language, String, required: false, description: "Request returned fields in a specific languge. Overrides ACCEPT-LANGUAGE header."
     end
 
 
-    def category(id:)
+    def category(id:, language: nil)
+      I18n.locale = language  ||  I18n.locale
       type_name, item_id = GraphQL::Schema::UniqueWithinType.decode(id)
       Pundit.policy_scope(context[:current_user], Category).find(item_id)
     end
